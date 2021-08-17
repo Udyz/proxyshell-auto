@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-
+import readline
 import argparse
 import base64
 import struct
