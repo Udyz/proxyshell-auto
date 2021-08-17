@@ -360,10 +360,10 @@ def main():
         files = args.l
         email = check_mail(exchange_url, fqdn, files)
     elif args.e and args.l or args.l and args.e:
-        print("stop stupid nigga")
+        print("stop stupid")
         exit(0)
     else:
-        print("stop stupid nigga")
+        print("stop stupid")
         exit(0)
     #well i'm not good for set args ...
     local_port = int(r_port)
