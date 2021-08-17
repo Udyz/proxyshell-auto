@@ -13,7 +13,7 @@ optional arguments:
 Simple uses: 
 C:\>python3 proxyshell.py -t lab.exchange.com
 ```
-![image](https://user-images.githubusercontent.com/39673284/129608654-8e40a077-f1bf-4c24-a399-c7bf083e7621.png)
+![image](https://user-images.githubusercontent.com/39673284/129674372-39ee1c65-91af-4d8e-8cbc-17c433501a81.png)
 
 # Reference:
 - https://github.com/dmaasland/proxyshell-poc
