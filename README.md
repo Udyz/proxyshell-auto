@@ -10,7 +10,7 @@ optional arguments:
   -l L        List user for brute force email
   -e E        Email address
   
-Simple uses: 
+Usage: 
 C:\>python3 proxyshell.py -t lab.exchange.com
 ```
 ![image](https://user-images.githubusercontent.com/39673284/129674372-39ee1c65-91af-4d8e-8cbc-17c433501a81.png)
