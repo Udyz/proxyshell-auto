@@ -63,7 +63,6 @@ class ProxyShell:
         self.rand_email = f'{rand_string()}@{rand_string()}.{rand_string(3)}'
         self.admin_sid = None
         self.legacydn = None
-        self.rand_subj = rand_string(16)
         self.session = requests.Session()
         self.session.verify = verify
     def post(self, endpoint, data, headers={}):
