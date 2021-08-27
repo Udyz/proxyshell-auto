@@ -25,4 +25,5 @@ SHELL>
 # Reference:
 - https://github.com/dmaasland/proxyshell-poc
 - https://github.com/ktecv2000/ProxyShell
-- https://y4y.space/2021/08/12/my-steps-of-reproducing-proxyshell/
+- https://y4y.space/2021/08/12/my-steps-of-reproducing-proxyshell/-
+- https://srcincite.io/blog/2021/08/25/pwn2own-vancouver-2021-microsoft-exchange-server-remote-code-execution.html
