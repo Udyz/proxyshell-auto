@@ -27,3 +27,9 @@ SHELL>
 - https://github.com/ktecv2000/ProxyShell
 - https://y4y.space/2021/08/12/my-steps-of-reproducing-proxyshell/-
 - https://srcincite.io/blog/2021/08/25/pwn2own-vancouver-2021-microsoft-exchange-server-remote-code-execution.html
+
+```
+Buy me a coffee
+BTC: 1Crcsso56NZ4ppy9wQBxaGobE7G4sJYwPd
+I will update webshell encode & bypass av (only windows defender) and some function that can help you get fully valid mailbox address (no need to brute-forces)
+```
